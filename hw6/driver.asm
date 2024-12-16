@@ -1,102 +1,76 @@
-; Program name: "Electricity Calculator". This program computes resistance in a direct current circuit.
-; Copyright (C) 2024  <William Dam>
+; driver.asm
+; Program name: "Circuit Current Calculator"
+; Author: William Dam
 
-; This file is part of the software program "Electricity Calculator".
+global _start  ; Use the default entry point
 
-; Electricity Calculator is free software: you can redistribute it and/or modify
-; it under the terms of the GNU General Public License as published by
-; the Free Software Foundation, either version 3 of the License, or
-; (at your option) any later version.
-
-; Electricity Calculator is distributed in the hope that it will be useful,
-; but WITHOUT ANY WARRANTY; without even the implied warranty of
-; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-; GNU General Public License for more details.
-
-; You should have received a copy of the GNU General Public License
-; along with this program. If not, see <https://www.gnu.org/licenses/>.
-
-; Author information
-;   Author name : William Dam
-;   Author email: wdam1@csu.fullerton.edu
-
-global _start
-extern faraday
-extern printf, scanf
-
-section .data
-    welcome_msg db "Welcome to Electricity brought to you by Henry Finkelstein.", 10, 0
-    prompt_name db "Please enter your full name: ", 0
-    input_name db 50 dup(0)
-    prompt_career db "Please enter the career path you are following: ", 0
-    input_career db 50 dup(0)
-    emf_prompt db "Please enter the EMF of your circuit in volts: ", 0
-    current_prompt db "Please enter the current in this circuit in amps: ", 0
-    emf_result db "You entered %f", 10, 0
-    current_result db "You entered %f", 10, 0
-    resistance_result db "The resistance in this circuit is %f ohms.", 10, 0
+extern printf, scanf, faraday
 
 section .bss
-    emf resq 1
-    current resq 1
-    resistance resq 1
+    input_name resb 64      ; Reserve space for name input
+    input_career resb 64    ; Reserve space for career input
+    emf resq 1              ; Reserve space for emf (float)
+    current resq 1          ; Reserve space for current (float)
+    resistance resq 1       ; Reserve space for resistance (float)
 
 section .text
-_start:
-    ; Display welcome message
+_start:          ; Default entry point handled by the system's runtime
+    ; Print welcome message
     mov rdi, welcome_msg
-    xor rax, rax
     call printf
 
-    ; Prompt for name
-    mov rdi, prompt_name
-    lea rsi, [input_name]
-    xor rax, rax
-    call scanf
-
-    ; Prompt for career path
-    mov rdi, prompt_career
-    lea rsi, [input_career]
-    xor rax, rax
-    call scanf
-
-    ; Prompt for EMF
-    mov rdi, emf_prompt
-    lea rsi, [emf]
-    xor rax, rax
-    call scanf
-
-    ; Display EMF
-    mov rdi, emf_result
-    mov rsi, [emf]
-    xor rax, rax
+    ; Input name
+    mov rdi, input_prompt_name
+    mov rsi, input_name
     call printf
-
-    ; Prompt for current
-    mov rdi, current_prompt
-    lea rsi, [current]
-    xor rax, rax
+    mov rdi, input_name
+    mov rsi, input_name
     call scanf
 
-    ; Display current
-    mov rdi, current_result
-    mov rsi, [current]
-    xor rax, rax
+    ; Input career
+    mov rdi, input_prompt_career
+    mov rsi, input_career
     call printf
+    mov rdi, input_career
+    mov rsi, input_career
+    call scanf
 
-    ; Calculate resistance
-    lea rdi, [resistance]
-    mov rsi, [emf]
-    mov rdx, [current]
+    ; Input emf
+    mov rdi, input_prompt_emf
+    mov rsi, emf
+    call printf
+    mov rdi, emf
+    mov rsi, emf
+    call scanf
+
+    ; Input current
+    mov rdi, input_prompt_current
+    mov rsi, current
+    call printf
+    mov rdi, current
+    mov rsi, current
+    call scanf
+
+    ; Call faraday to calculate resistance
+    mov rdi, resistance
+    mov rsi, [emf]         ; Load emf
+    mov rdx, [current]     ; Load current
     call faraday
 
-    ; Display resistance
-    mov rdi, resistance_result
+    ; Output result
+    mov rdi, result_msg
     mov rsi, [resistance]
-    xor rax, rax
     call printf
 
-    ; Exit program
-    xor rdi, rdi
+    ; Exit the program
     mov rax, 60
+    xor rdi, rdi
     syscall
+
+section .data
+    welcome_msg db "Welcome to Electricity brought to you by Henry Finkelstein.", 0
+    input_prompt_name db "Enter your name: ", 0
+    input_prompt_career db "Enter your career: ", 0
+    input_prompt_emf db "Enter the EMF value: ", 0
+    input_prompt_current db "Enter the current value: ", 0
+    result_msg db "The resistance is: %lf", 10, 0
