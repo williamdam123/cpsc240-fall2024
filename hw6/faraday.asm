@@ -1,4 +1,4 @@
-; Program name: "Electricity Calculator". Function to calculate resistance R = F / I.
+; Program name: "Circuit Current Calculator". Function to calculate resistance R = F / I.
 ; Author: William Dam
 
 global faraday
