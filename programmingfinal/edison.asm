@@ -24,11 +24,14 @@
 ;   Author CWID : 884616384
 
 global electricity
+extern printf  ; Declare printf as external
 
 segment .data
     msgI1 db "The current on the first circuit is %.5f amps.", 0
     msgI2 db "The current on the second circuit is %.5f amps.", 0
-    msgTotal db "The total current is %.5f amps.", 0
+    msgTotal db "The total current is %.5f amps", 0
+    msgReceived db "The main received this number %.5f and will keep it for later.", 0
+    msgGoodbye db "A zero will be returned to the operating system. Bye", 0
 
 segment .bss
     align 64
@@ -88,16 +91,28 @@ electricity:
     call        printf
 
     ; Compute I = I1 + I2
-    movss       xmm0, [temp]     ; Load I1 from temporary memory
-    movss       xmm1, xmm0       ; Copy I1 to xmm1
-    movss       xmm0, [rbp + 16] ; Reload E (to recalculate I2)
-    divss       xmm0, xmm2       ; Recalculate I2
-    addss       xmm1, xmm0       ; Add I1 and I2 (I = I1 + I2)
-    movss       [temp], xmm1     ; Store total current I in temp
+    movss       xmm0, [rbp + 16] ; Reload E
+    divss       xmm0, xmm1       ; Recalculate I1
+    movss       xmm1, [rbp + 32] ; Reload R2 for I2
+    divss       xmm0, xmm1       ; Compute I2 = E / R2
+    addss       xmm0, xmm1       ; Add I1 and I2 (I = I1 + I2)
 
-    ; Print I
+    movss       [temp], xmm0     ; Store total current I in temp
+
+    ; Print Total Current
     mov         rdi, msgTotal
     mov         rsi, temp        ; Pass the address of temp to printf
+    xor         eax, eax
+    call        printf
+
+    ; Print Message for Main Received the Total Current
+    mov         rdi, msgReceived
+    mov         rsi, temp        ; Pass the address of temp to printf
+    xor         eax, eax
+    call        printf
+
+    ; Print Goodbye Message
+    mov         rdi, msgGoodbye
     xor         eax, eax
     call        printf
 
@@ -126,5 +141,5 @@ electricity:
     pop         rbx
     pop         rbp
 
-    ; Clean up
+    ; Clean up and return total current
     ret
