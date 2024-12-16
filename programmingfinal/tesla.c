@@ -25,39 +25,46 @@
 
 #include <stdio.h>
 
-// Declaration of electricity function from edison.asm
-extern float electricity(float E, float R1, float R2);
+extern void electricity(float R1, float R2, float E, float *I1, float *I2, float *I);
 
 int main() {
+    float R1, R2, E;       // Resistance and Electric Force
+    float I1, I2, I; // Currents in circuits and total current
+
+    // Print the welcome messages
     printf("Welcome to Palm Beach Electric Company.\n");
     printf("This software is maintained by Frank Sinatra.\n\n");
 
-    // Input values
-    float E, R1, R2;
-
+    // Prompt for inputs
     printf("Please enter the electric force in the circuit (volts): ");
     if (scanf("%f", &E) != 1) {
-        printf("Error: Invalid input for electric force.\n");
-        return 1;
+        printf("Invalid input for electric force.\n");
+        return 1; // Exit if input is invalid
     }
 
     printf("Please enter the resistance in circuit number 1 (ohms): ");
     if (scanf("%f", &R1) != 1) {
-        printf("Error: Invalid input for resistance in circuit 1.\n");
-        return 1;
+        printf("Invalid input for resistance 1.\n");
+        return 1; // Exit if input is invalid
     }
 
     printf("Please enter the resistance in circuit number 2 (ohms): ");
     if (scanf("%f", &R2) != 1) {
-        printf("Error: Invalid input for resistance in circuit 2.\n");
-        return 1;
+        printf("Invalid input for resistance 2.\n");
+        return 1; // Exit if input is invalid
     }
 
     printf("\nThank you.\n");
 
-    // Call electricity function
-    float I = electricity(E, R1, R2);
+    // Call the assembly function for calculating currents
+    electricity(R1, R2, E, &I1, &I2, &I);
 
+    // Print the results with proper formatting
+    printf("The current on the first circuit is %.5f amps.\n", I1);
+    printf("The current on the second circuit is %.5f amps.\n", I2);
+    printf("The total current is %.5f amps\n\n", I);
+
+    // Print the value received in the main function
     printf("The main received this number %.5f and will keep it for later.\n", I);
     printf("A zero will be returned to the operating system. Bye\n");
 
