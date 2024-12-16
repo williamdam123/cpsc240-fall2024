@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# Program name: "Circuit Current Calculator". This program calculates currents in a 
-# circuit with two parallel sub-circuits using IEEE floating-point precision.
+# Program name: "Circuit Current Calculator". This program calculates the current 
+# based on the resistance and electromagnetic force (EMF) with input validation for float input.
 # Copyright (C) <2024>  <William Dam>
 
 # This file is part of the software program "Circuit Current Calculator".
 
 # Circuit Current Calculator is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
+# it under the terms of the GNU General Public License as published by the
+# Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 
 # Circuit Current Calculator is distributed in the hope that it will be useful,
@@ -21,27 +21,27 @@
 
 # Author information
 #   Author name : William Dam
-#   Author email: william.dam@example.com
-#   Author section: 240-3
-#   Author CWID : 123456789
+#   Author email: wdam1@csu.fullerton.edu
+#   Author section: CPSC240-19
+#   Author CWID : 884616384
 
-echo "Compiling driver.asm..."
+echo "Compiling the driver file..."
 nasm -f elf64 -o driver.o driver.asm
 
-echo "Compiling faraday.asm..."
+echo "Compiling the faraday file..."
 nasm -f elf64 -o faraday.o faraday.asm
 
-echo "Compiling atof.asm..."
+echo "Compiling the atof file..."
 nasm -f elf64 -o atof.o atof.asm
 
-echo "Compiling ftoa.asm..."
+echo "Compiling the ftoa file..."
 nasm -f elf64 -o ftoa.o ftoa.asm
 
-echo "Compiling strlen.asm..."
+echo "Compiling the strlen file..."
 nasm -f elf64 -o strlen.o strlen.asm
 
 echo "Linking the object files..."
-gcc -m64 -no-pie -o hw6.out -std=c17 driver.o faraday.o atof.o ftoa.o strlen.o #-fno-pie
+gcc -m64 -no-pie -o hw6.out driver.o faraday.o atof.o ftoa.o strlen.o -lc
 
 echo "Running hw6..."
 ./hw6.out
